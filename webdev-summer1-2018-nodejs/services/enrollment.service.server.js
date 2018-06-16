@@ -1,4 +1,4 @@
-module.exports = function (app) {
+  module.exports = function (app) {
 
   app.post('/api/enroll/student/:studentId/section/:sectionId',
     enrollStudentInSection);

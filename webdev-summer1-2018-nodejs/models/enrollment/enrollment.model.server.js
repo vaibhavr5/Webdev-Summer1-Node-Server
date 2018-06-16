@@ -5,11 +5,11 @@ var enrollmentModel = mongoose.model(
   enrollmentSchema
 );
 
-function enrollStudentInSection(studentId, sectionId) {
-  var enrollment = {
-    student: studentId,
-    section: sectionId
-  };
+function enrollStudentInSection(enrollment) {
+  // var enrollment = {
+  //   student: studentId,
+  //   section: sectionId
+  // };
   return enrollmentModel.create(enrollment);
 }
 
