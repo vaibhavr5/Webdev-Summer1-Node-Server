@@ -32,8 +32,6 @@ module.exports = function (app) {
         var sectionId = req.params.sectionId;
         var currentUser = req.session.currentUser;
         var studentId = currentUser._id;
-        console.log("CURRENT USER:"+currentUser);
-        console.log("STudnet id:"+studentId);
         var enrollment = {
             student: studentId,
             section: sectionId
@@ -41,7 +39,8 @@ module.exports = function (app) {
 
         sectionModel
             .decrementSectionSeats(sectionId)
-            .then(function () {
+            .then(function (section) {
+                console.log("SERVER SECTION ENROLL:"+JSON.stringify(section.seats));
                 return enrollmentModel
                     .enrollStudentInSection(enrollment)
             })

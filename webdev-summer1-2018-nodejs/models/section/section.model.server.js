@@ -16,10 +16,15 @@ function decrementSectionSeats(sectionId) {
   });
 }
 
+function findSectionById(sectionId)
+{
+  return sectionModel.find({sectionId:sectionId});
+}
+
 function incrementSectionSeats(sectionId) {
   return sectionModel.update({_id: sectionId}, {
     $inc: {seats: 1}
-  });
+  }).then( findSectionById(sectionId));
 }
 
 module.exports = {

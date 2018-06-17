@@ -14,7 +14,11 @@ module.exports = function (app) {
       .findUserByCredentials(credentials)
       .then(function(user) {
         req.session['currentUser'] = user;
-        res.json(user);
+       if(user==null)
+           res.status(500).send({ user: "Invalid User" });
+        else
+          console.log("FROM SERVER:"+user.username);
+          res.send(user);
       })
   }
 
