@@ -6,11 +6,13 @@ var enrollmentModel = mongoose.model(
 );
 
 function enrollStudentInSection(enrollment) {
-  // var enrollment = {
-  //   student: studentId,
-  //   section: sectionId
-  // };
+
   return enrollmentModel.create(enrollment);
+}
+
+function unrollStudentInSection(enrollment){
+    return enrollmentModel.find(enrollment).remove().exec();
+
 }
 
 function findSectionsForStudent(studentId) {
@@ -30,5 +32,6 @@ function findStudentsForSection(sectionId) {
 module.exports = {
   enrollStudentInSection: enrollStudentInSection,
   findStudentsForSection: findStudentsForSection,
-  findSectionsForStudent: findSectionsForStudent
+  findSectionsForStudent: findSectionsForStudent,
+    unrollStudentInSection: unrollStudentInSection
 };

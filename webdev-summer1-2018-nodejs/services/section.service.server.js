@@ -5,6 +5,9 @@ module.exports = function (app) {
   app.post('/api/section/:sectionId/enrollment', enrollStudentInSection);
   app.get('/api/student/section', findSectionsForStudent);
   app.get('/api/section/:sectionId/student', findStudentsForSection);
+    app.delete('/api/section/:sectionId', deleteSection);
+    app.put('/api/section/:sectionId', updateSection);
+    app.delete('/api/section/:sectionId/enrollment', unrollStudentInSection);
 
   var sectionModel = require('../models/section/section.model.server');
   var enrollmentModel = require('../models/enrollment/enrollment.model.server');
@@ -28,7 +31,7 @@ module.exports = function (app) {
   }
 
     function enrollStudentInSection(req, res) {
-    console.log("In enrollment server"+req.params.sectionId);
+
         var sectionId = req.params.sectionId;
         var currentUser = req.session.currentUser;
         var studentId = currentUser._id;
@@ -40,7 +43,6 @@ module.exports = function (app) {
         sectionModel
             .decrementSectionSeats(sectionId)
             .then(function (section) {
-                console.log("SERVER SECTION ENROLL:"+JSON.stringify(section.seats));
                 return enrollmentModel
                     .enrollStudentInSection(enrollment)
             })
@@ -49,7 +51,28 @@ module.exports = function (app) {
             })
     }
 
+    function unrollStudentInSection(req, res) {
+        var sectionId = req.params.sectionId;
+        var currentUser = req.session.currentUser;
+        var studentId = currentUser._id;
+        var enrollment = {
+            student: studentId,
+            section: sectionId
+        };
+
+        sectionModel
+            .incrementSectionSeats(sectionId)
+            .then(function () {
+                return enrollmentModel
+                    .unrollStudentInSection(enrollment)
+            })
+            .then(function (enrollment) {
+                res.json(enrollment);
+            })
+    }
+
   function findSectionsForStudent(req, res) {
+      console.log("In student section server");
         var currentUser = req.session.currentUser;
         var studentId = currentUser._id;
         enrollmentModel
@@ -67,4 +90,22 @@ module.exports = function (app) {
         res.json(enrollments);
       })
   }
+
+    function deleteSection(req, res) {
+        var sectionId = req.params['sectionId'];
+        sectionModel
+            .deleteSection(sectionId)
+            .then(function (sections) {
+                res.json(sections);
+            })
+    }
+
+    function updateSection(req, res) {
+        var section = req.body;
+        sectionModel
+            .updateSection(section)
+            .then(function (section) {
+                res.json(section);
+            })
+    }
 };
